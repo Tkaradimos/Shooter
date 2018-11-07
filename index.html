@@ -503,28 +503,36 @@ function launchGreenEnemy() {
 		
 		function hitEnemy(enemy, bullet) {
 			
-		    var explosionSo = game.add.audio('explosionSo');
+		   
 		    var explosion = explosions.getFirstExists(false);
 		    explosion.reset(bullet.body.x + bullet.body.halfWidth, bullet.body.y + bullet.body.halfHeight);
 		    explosion.body.velocity.y = enemy.body.velocity.y;
 		    explosion.alpha = 0.7;
 		    explosion.play('explosion', 30, false, true);
 		    enemy.kill();
-				// Increase score
-				score += enemy.damageAmount * 10;
-        scoreText.render()
-				//  Pacing
+		    bullet.kill();
+			
+			// Increase score
+			score += enemy.damageAmount * 10;
+        		scoreText.render()
+			
+    //  Pacing
+			
     //  Enemies come quicker as score increases
     greenEnemySpacing *= 0.9;
+			
     //  Blue enemies come in after a score of 1000
+			
     if (!blueEnemyLaunched && score > 1000) {
       blueEnemyLaunched = true;
       launchBlueEnemy();
+	    
       //  Slow green enemies down now that there are other enemies
+	    
       greenEnemySpacing *= 2;
     }
 				death.play();
-		    bullet.kill();
+		    
 		}
 	</script>
 </body>
