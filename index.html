@@ -472,7 +472,7 @@ function launchGreenEnemy() {
     		var explosion = explosions.getFirstExists(false);
     		explosion.reset(player.body.x + player.body.halfWidth, player.body.y + player.body.halfHeight);
     		explosion.alpha = 0.7;
-    		explosion.play('explosion', 30, false, true);
+    		explosion.play('trail', 30, false, true);
     		bullet.kill();
     		player.damage(bullet.damageAmount);
     		shields.render();
@@ -484,7 +484,7 @@ function launchGreenEnemy() {
     		explosion.reset(enemy.body.x + enemy.body.halfWidth, enemy.body.y + enemy.body.halfHeight);
     		explosion.body.velocity.y = enemy.body.velocity.y;
     		explosion.alpha = 0.7;
-    		explosion.play('explosion', 30, false, true);
+    		explosion.play('trail', 30, false, true);
 		death.play();
     		enemy.kill();
 		player.damage(enemy.damageAmount);
