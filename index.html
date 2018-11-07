@@ -90,6 +90,11 @@ body {
 					Phaser.Easing.Quintic.Out);
 			shipTrail.start(false, 5000, 10);
 
+			//add bgm
+			music = game.add.audio('music');
+			music.volume = 0.5;
+			music.loop = true;
+			music.play();
 		}
 
 		function update() {
