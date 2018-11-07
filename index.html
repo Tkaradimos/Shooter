@@ -31,8 +31,13 @@ body {
 		var fireButton;
 		var bulletTimer = 0;
 		
-		// Game Music
+		// BGM
 		var music;
+
+		// SFX
+		var death;
+		var laser;
+		var enemyLaser;
 
 		var ACCLERATION = 600;
 		var DRAG = 400;
@@ -51,6 +56,11 @@ body {
 
 			//bgm
 			game.load.audio('music', 'sounds/Starfield_BGM.mp3');
+			
+			//sfx
+			game.load.audio('death', 'sounds/death.mp3');
+			game.load.audio('laser', 'sounds/sound_spark_Laser-Like_Synth_Laser_Sweep_Burst_13.mp3');
+			game.load.audio('enemyLaser', 'sounds/Enemy_Laser1.mp3');
 		}
 
 		function create() {
@@ -98,6 +108,15 @@ body {
 			music.volume = 0.5;
 			music.loop = true;
 			music.play();
+
+
+			// adding sfx
+			laser = game.add.audio('laser');
+			laser.volume = 0.3;
+			rumble = game.add.audio('death');
+			rumble.volume = 1;
+			enemyLaser = game.add.audio('enemyLaser');
+			enemyLaser.volume = 0.6;
 		}
 
 		function update() {
