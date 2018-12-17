@@ -51,6 +51,7 @@ body {
 		// Game Sounds
 		var death;
 		var laser;
+		var laser2;
 		// Score
 		var score = 0;
 		var scoreText;
@@ -80,6 +81,7 @@ body {
 			//sounds
 			game.load.audio('death', 'sounds/death.mp3');
 			game.load.audio('laser', 'sounds/Laser.mp3');
+			game.load.audio('laser2', 'sounds/Enemy_Laser1.mp3');
 
 			//enemies
 			game.load.image('enemy-green', 'assets/enemies/enemy2.png');
@@ -114,6 +116,7 @@ body {
 			player.anchor.setTo(0.5, 0.5);
 			game.physics.enable(player, Phaser.Physics.ARCADE);
 			player.body.maxVelocity.setTo(MAXSPEED, MAXSPEED);
+			player.weaponLevel = 1
 			player.body.drag.setTo(DRAG, DRAG);
 			player.events.onKilled.add(function(){
 				shipTrail.kill();
@@ -436,27 +439,59 @@ body {
 
 
 		function fireBullet() {
-			//  To avoid them being allowed to fire too fast we set a time limit
-			if (game.time.now > bulletTimer) {
-				var BULLET_SPEED = 400;
-				var BULLET_SPACING = 250;
-				//  Grab the first bullet we can from the pool
-				var bullet = bullets.getFirstExists(false);
+    switch (player.weaponLevel) {
+        case 1:
+        //  To avoid them being allowed to fire too fast we set a time limit
+        if (game.time.now > bulletTimer)
+        {
+            var BULLET_SPEED = 400;
+            var BULLET_SPACING = 250;
+            //  Grab the first bullet we can from the pool
+            var bullet = bullets.getFirstExists(false);
 
-				if (bullet) {
-					//  And fire it
-					//  Make bullet come out of tip of ship with right angle
-					var bulletOffset = 20 * Math.sin(game.math.degToRad(player.angle));
-					bullet.reset(player.x + bulletOffset, player.y);
-					bullet.angle = player.angle;
-					game.physics.arcade.velocityFromAngle(bullet.angle, BULLET_SPEED, bullet.body.velocity);
-					bullet.body.velocity.y += player.body.velocity.y;
+            if (bullet)
+            {
+                //  And fire it
+                //  Make bullet come out of tip of ship with right angle
+                var bulletOffset = 20 * Math.sin(game.math.degToRad(player.angle));
+                bullet.reset(player.x + bulletOffset, player.y);
+                bullet.angle = player.angle;
+                game.physics.arcade.velocityFromAngle(bullet.angle - 90, BULLET_SPEED, bullet.body.velocity);
+                bullet.body.velocity.x += player.body.velocity.x;
 
-					bulletTimer = game.time.now + BULLET_SPACING;
-					laser.play();
-				}
-			}
-		}
+                bulletTimer = game.time.now + BULLET_SPACING;
+		    laser.play();
+            }
+        }
+        break;
+
+        case 2:
+        if (game.time.now > bulletTimer) {
+            var BULLET_SPEED = 400;
+            var BULLET_SPACING = 550;
+
+
+            for (var i = 0; i < 3; i++) {
+                var bullet = bullets.getFirstExists(false);
+                if (bullet) {
+                    //  Make bullet come out of tip of ship with right angle
+                    var bulletOffset = 20 * Math.sin(game.math.degToRad(player.angle));
+                    bullet.reset(player.x + bulletOffset, player.y);
+                    //  "Spread" angle of 1st and 3rd bullets
+                    var spreadAngle;
+                    if (i === 0) spreadAngle = -20;
+                    if (i === 1) spreadAngle = 0;
+                    if (i === 2) spreadAngle = 20;
+                    bullet.angle = player.angle + spreadAngle;
+                    game.physics.arcade.velocityFromAngle(spreadAngle - 90, BULLET_SPEED, bullet.body.velocity);
+                    bullet.body.velocity.x += player.body.velocity.x;
+                }
+                bulletTimer = game.time.now + BULLET_SPACING;
+		    laser2.play();
+            }
+        }
+    }
+}
 
 		function enemyHitsPlayer (player, bullet) {
 			var explosion = explosions.getFirstExists(false);
@@ -507,6 +542,10 @@ body {
 				// Slow Green Enemies now that there are more enemies
 				GreenEnemiesSpacing *= 2;
 			}
+			//  Weapon upgrade
+   			 if (score > 4000 && player.weaponLevel < 2) {
+     			 player.weaponLevel = 2;
+			}
 		}
 
 		function restart(){
@@ -523,6 +562,7 @@ body {
 			game.time.events.remove(BlueEnemiesLaunchTimer);
 
 			// Revive the player
+			player.weaponLevel = 1;
 			player.revive();
 			player.reset(100, game.height / 2);
 			player.health = 100;
